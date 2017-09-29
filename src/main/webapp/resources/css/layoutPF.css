@@ -1,0 +1,69 @@
+.ui-widget {
+    font-size: 12px !important;
+}
+
+.ui-widget-overlay {
+    background: transparent !important;
+}
+
+.ui-growl {
+    z-index:99999999999 !important;
+}
+
+.ui-layout-north {
+    z-index: 3 !important;
+    overflow: visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+    overflow: visible !important;
+}
+
+.ui-button-icon-only .ui-icon, .ui-button-text-icon-left .ui-icon, .ui-button-text-icon-right .ui-icon {
+    margin-top: -6px !important;
+}
+
+.ui-menuitem-icon.ui-icon {
+    margin-top: 3px !important;
+}
+
+.ui-column-title {
+    font-weight: bold !important;
+}
+
+.ui-datatable th.ui-state-default {
+    font-weight: bold !important;
+}
+
+.ui-growl-info, .ui-messages .ui-messages-info, .ui-message.ui-message-info {
+    background-color: #156090 !important;
+    border-color: #156090 !important;
+}
+
+.ui-growl-warn, .ui-messages .ui-messages-warn, .ui-message.ui-message-warn {
+    background-color: #e69926 !important;
+    border-color: #e69926 !important;;
+}
+
+.ui-growl-error, .ui-growl-fatal, .ui-messages .ui-messages-error, .ui-message.ui-message-error, .ui-messages .ui-messages-fatal, .ui-message.ui-message-fatal {
+    background-color: #af3e3c !important;
+    border-color: #af3e3c !important;
+}
+
+.ui-panelgrid-cell.ui-grid-col-1 {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+}
+
+@media screen and (max-width : 750px) {
+    .menuDefault {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width : 750px) {
+    .menuShort {
+        display: none !important;
+    }
+}

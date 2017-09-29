@@ -1,0 +1,56 @@
+<?xml version	= "1.0" encoding	= "UTF-8" ?>
+
+<!DOCTYPE html>
+
+<html xmlns    = "http://www.w3.org/1999/xhtml"
+	  xmlns:h  = "http://java.sun.com/jsf/html"
+	  xmlns:f  = "http://java.sun.com/jsf/core"
+	  xmlns:p  = "http://primefaces.org/ui"
+	  xmlns:ui = "http://java.sun.com/jsf/facelets">
+	
+	<h:head>
+		<meta http-equiv	= "content-type" content = "text/html; charset = utf-8" />
+		<meta name			= "description"  content = "tomcat" />
+		<title>tomcat</title>
+
+		<h:outputStylesheet name="css/layoutPF.css" />
+		<h:outputStylesheet name="css/layout.css" />
+		<h:outputScript name="js/layoutPF.js" />
+		<h:outputScript name="js/validate.js" />
+	</h:head>
+	
+	<body ondragstart="return false" draggable="false"
+		  ondragenter="event.dataTransfer.dropEffect='none'; event.stopPropagation(); event.preventDefault();"
+		  ondragover="event.dataTransfer.dropEffect='none'; event.stopPropagation(); event.preventDefault();"
+		  ondrop="event.dataTransfer.dropEffect='none'; event.stopPropagation(); event.preventDefault();">
+		<div>
+			<p:layout fullPage="true">
+				<p:layoutUnit position="north" style="border: none;">
+					<ui:include src="menu.xhtml" />
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center" style="border: none;">
+					<ui:insert name="centro" />
+
+					<!-- GROWL -->
+					<p:growl id="growl" widgetVar="growl" showDetail="true" sticky="true" severity="info,warn,error" autoUpdate="true"/>
+
+					<!-- DIALOG STATUS -->
+					<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" oncomplete="PF('statusDialog').hide()"/>
+					<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" appendTo="@(body)" styleClass="posicaoDialogCarregando">
+						<p:graphicImage url="/resources/imgs/carregando.gif"/>
+					</p:dialog>
+
+					<!-- DIALOG CONFIRMAR -->
+					<p:confirmDialog global="true" appendTo="@(body)" severity="alert">
+						<div align="center">
+							<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-closethick" />
+						</div>
+					</p:confirmDialog>
+				</p:layoutUnit>
+			</p:layout>
+		</div>
+	</body>
+	
+</html>

@@ -1,0 +1,130 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core">
+	
+	<ui:decorate template="template.xhtml">
+		<ui:define name="centro">
+
+			<div class="divCenterPage ui-fluid">
+
+				<h:form id="fmMain">
+
+					<h:outputText value="Cliente" styleClass="titulo" />
+
+					<br/><br/>
+
+					<h:panelGroup id="pgList" rendered="#{clienteMB.modoList}">
+						<p:dataTable id="dtCliente"
+									 widgetVar="dtCliente"
+									 reflow="true"
+									 value="#{clienteMB.lazyDataModel}"
+									 var="clienteDTO"
+									 selection="#{clienteMB.dto}"
+									 rowKey="#{clienteDTO.id}"
+									 emptyMessage="Nenhum registro encontrado."
+									 filterEvent="enter"
+									 lazy="true"
+									 paginator="true"
+									 rows="10"
+									 paginatorPosition="bottom"
+									 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									 rowsPerPageTemplate="10,25,50"
+									 currentPageReportTemplate="{currentPage}/{totalPages}">
+
+							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
+							<p:ajax event="page" listener="#{clienteMB.setDto(null)}" update="fmMain:pnBtnsList" />
+							<p:ajax event="filter" listener="#{clienteMB.setDto(null)}" update="fmMain:pnBtnsList" />
+
+							<p:column selectionMode="single" styleClass="colunaRadio" />
+
+							<p:column headerText="Código" sortBy="#{clienteDTO.id}" filterBy="#{'.c.id like #%filter%#'}">
+								<h:outputText value="#{clienteDTO.id}" />
+							</p:column>
+
+							<p:column headerText="Nome" sortBy="#{clienteDTO.nome}" filterBy="#{'.c.nome like #%filter%#'}">
+								<h:outputText value="#{clienteDTO.nome}" />
+							</p:column>
+
+							<p:column headerText="Celular1">
+								<h:outputText value="#{clienteDTO.celular1Format}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br/>
+
+						<div align="center">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:spacer/>
+								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{clienteMB.newEntity}" update="pnBtnsList,fmMain">
+									<f:setPropertyActionListener value="#{'I'}" target="#{clienteMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Editar" icon="fa fa-edit" action="#{clienteMB.loadEntity}" update="pnBtnsList,fmMain" disabled="#{clienteMB.dto.id eq null}">
+									<f:setPropertyActionListener value="#{'U'}" target="#{clienteMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{clienteMB.delete}" update="pnBtnsList" disabled="#{clienteMB.dto.id eq null}">
+									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtCliente').clearFilters(); PF('dtCliente').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:spacer/>
+							</p:panelGrid>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup id="pgForm" rendered="#{!clienteMB.modoList}">
+						<p:panelGrid id="pnFormCliente" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:outputLabel value="Código: " />
+							<p:inputText id="itCodigo" value="#{clienteMB.entity.id}" maxlength="100" disabled="true"/>
+
+							<p:outputLabel value="Nome: " />
+							<p:inputText id="itNome" value="#{clienteMB.entity.nome}" maxlength="100"/>
+
+							<p:outputLabel value="CPF: " />
+							<p:inputMask id="imCPF" mask="999.999.999-99" value="#{clienteMB.entity.cpf}" />
+
+							<p:outputLabel value="Telefone: " />
+							<p:inputMask id="imTelefone" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.telefone}" />
+
+							<p:outputLabel value="Celular1: " />
+							<p:inputMask id="imCelular1" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular1}" />
+
+							<p:outputLabel value="Celular2: " />
+							<p:inputMask id="imCelular2" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular2}" />
+
+							<p:outputLabel value="Logradouro: " />
+							<p:inputText id="itLogradouro" value="#{clienteMB.entity.dadosPessoa.logradouro}" maxlength="100"/>
+
+							<p:outputLabel value="Complemento: " />
+							<p:inputText id="itComplemento" value="#{clienteMB.entity.dadosPessoa.complemento}" maxlength="100"/>
+
+							<p:outputLabel value="CEP: " />
+							<p:inputMask id="itCEP" mask="99999-999" value="#{clienteMB.entity.dadosPessoa.cep}" />
+
+							<p:outputLabel value="Bairro: " />
+							<p:inputText id="itBairro" value="#{clienteMB.entity.dadosPessoa.bairro}" maxlength="100"/>
+
+							<p:outputLabel value="Cidade: " />
+							<p:inputText id="itCidade" value="#{clienteMB.entity.dadosPessoa.cidade}" maxlength="100"/>
+
+							<p:outputLabel value="Estado: " />
+							<p:inputText id="itEstado" value="#{clienteMB.entity.dadosPessoa.estado}" maxlength="100"/>
+
+							<p:spacer />
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validCliente()" action="#{clienteMB.save}" update="fmMain" />
+									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{clienteMB.changeModoList}" update="fmMain" />
+								</p:panelGrid>
+							</h:panelGroup>
+						</p:panelGrid>
+					</h:panelGroup>
+
+				</h:form>
+
+			</div>
+
+		</ui:define>
+	</ui:decorate>
+</html>

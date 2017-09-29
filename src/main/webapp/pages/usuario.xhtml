@@ -1,0 +1,119 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core">
+	
+	<ui:decorate template="template.xhtml">
+		<ui:define name="centro">
+
+			<div class="divCenterPage ui-fluid">
+				
+				<h:form id="fmMain">
+
+					<h:outputText value="Usuários" styleClass="titulo" />
+
+					<br/><br/>
+
+					<h:panelGroup id="pgList" rendered="#{usuarioMB.modoList}">
+
+						<p:dataTable id="dtUsuarios"
+									 widgetVar="dtUsuarios"
+									 reflow="true"
+									 value="#{usuarioMB.lazyDataModel}"
+									 var="usuario"
+									 selection="#{usuarioMB.entity}"
+									 rowKey="#{usuario.id}"
+									 emptyMessage="Nenhum registro encontrado."
+									 filterEvent="enter"
+									 lazy="true"
+									 paginator="true"
+									 rows="10"
+									 paginatorPosition="bottom"
+									 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									 rowsPerPageTemplate="10,25,50"
+									 currentPageReportTemplate="{currentPage}/{totalPages}">
+
+							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
+							<p:ajax event="page" listener="#{usuarioMB.setEntity(null)}" update="fmMain:pnBtnsList" />
+							<p:ajax event="filter" listener="#{usuarioMB.setEntity(null)}" update="fmMain:pnBtnsList" />
+
+							<p:column selectionMode="single" styleClass="colunaRadio" filterMatchMode="none"/>
+
+							<p:column headerText="Código" sortBy="#{usuario.id}" filterBy="#{'id like #filter%#'}">
+								<h:outputText value="#{usuario.id}" />
+							</p:column>
+
+							<p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{'login like #%filter%#'}">
+								<h:outputText value="#{usuario.login}" />
+							</p:column>
+
+							<p:column headerText="Nome" sortBy="#{usuario.nome}" filterBy="#{'nome like #%filter%#'}">
+								<h:outputText value="#{usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Perfil" sortBy="#{usuario.perfil}" filterBy="#{'perfil = #filter#'}">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('dtUsuarios').filter()">
+										<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true" />
+										<f:selectItems value="#{usuarioMB.vo.enumPerfis}" var="enumPerfil" itemLabel="#{enumPerfil.descricao}" />
+									</p:selectOneMenu>
+								</f:facet>
+								<h:outputText value="#{usuario.perfil.descricao}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br/>
+
+						<div align="center">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:spacer/>
+								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{usuarioMB.newEntity}" update="pnBtnsList,fmMain">
+									<f:setPropertyActionListener value="#{'I'}" target="#{usuarioMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Editar" icon="fa fa-edit" update="pnBtnsList,fmMain" disabled="#{usuarioMB.entity.id eq null}">
+									<f:setPropertyActionListener value="#{'U'}" target="#{usuarioMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{usuarioMB.delete}" update="pnBtnsList" disabled="#{usuarioMB.entity.id eq null}">
+									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtUsuarios').clearFilters(); PF('dtUsuarios').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:spacer/>
+							</p:panelGrid>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup id="pgForm" rendered="#{!usuarioMB.modoList}">
+						<p:panelGrid id="pnFormUsuario" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:outputLabel value="Login: " />
+							<p:inputText id="itLogin" value="#{usuarioMB.entity.login}" maxlength="45" />
+
+							<p:outputLabel value="Senha: " rendered="#{usuarioMB.modoInsert}"/>
+							<p:password id="pwSenha" value="#{usuarioMB.entity.senha}" maxlength="6" rendered="#{usuarioMB.modoInsert}"/>
+
+							<p:outputLabel value="Nome: " />
+							<p:inputText id="itNome" value="#{usuarioMB.entity.nome}" maxlength="100"/>
+
+							<p:outputLabel value="Perfil: " />
+							<p:selectOneButton id="sobPerfil" widgetVar="sobPerfil" value="#{usuarioMB.entity.perfil}">
+								<f:selectItems value="#{usuarioMB.vo.enumPerfis}" var="enumPerfil" itemLabel="#{enumPerfil.descricao}" itemValue="#{enumPerfil}" />
+							</p:selectOneButton>
+
+							<p:spacer />
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validUsuario()" action="#{usuarioMB.save}" update="fmMain:dtUsuarios" />
+									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{usuarioMB.changeModoList}" update="fmMain" />
+								</p:panelGrid>
+							</h:panelGroup>
+						</p:panelGrid>
+
+					</h:panelGroup>
+					
+				</h:form>
+			</div>
+
+		</ui:define>
+	</ui:decorate>
+</html>

@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:decorate template="template.xhtml">
+		<ui:define name="centro">
+
+			<div class="divCenterPage ui-fluid">
+
+				<h:form id="fmMain">
+
+					<h:outputText value="Item Pedido" styleClass="titulo" />
+
+					<br/><br/>
+
+					<h:panelGroup id="pgList" rendered="#{itemPedidoMB.modoList}">
+						<p:dataTable id="dtItensPedido"
+									 widgetVar="dtItensPedido"
+									 reflow="true"
+									 value="#{itemPedidoMB.lazyDataModel}"
+									 var="itemPedido"
+									 selection="#{itemPedidoMB.entity}"
+									 rowKey="#{itemPedido.id}"
+									 emptyMessage="Nenhum registro encontrado."
+									 filterEvent="enter"
+									 lazy="true"
+									 paginator="true"
+									 rows="10"
+									 paginatorPosition="bottom"
+									 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									 rowsPerPageTemplate="10,25,50"
+									 currentPageReportTemplate="{currentPage}/{totalPages}">
+
+							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
+							<p:ajax event="page" listener="#{itemPedidoMB.setEntity(null)}" update="fmMain:pnBtnsList" />
+							<p:ajax event="filter" listener="#{itemPedidoMB.setEntity(null)}" update="fmMain:pnBtnsList" />
+
+							<p:column selectionMode="single" styleClass="colunaRadio" />
+
+							<p:column headerText="Código" sortBy="#{itemPedido.id}" filterBy="#{'id like #filter%#'}">
+								<h:outputText value="#{itemPedido.id}" />
+							</p:column>
+
+							<p:column headerText="Nome" sortBy="#{itemPedido.nome}" filterBy="#{'nome like #%filter%#'}">
+								<h:outputText value="#{itemPedido.nome}" />
+							</p:column>
+
+							<p:column headerText="Preço" sortBy="#{itemPedido.preco}">
+								<h:outputText value="#{itemPedido.preco}">
+									<f:convertNumber type="currency" currencySymbol="R$ " />
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
+
+						<br/>
+
+						<div align="center">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:spacer/>
+								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{itemPedidoMB.newEntity}" update="pnBtnsList,fmMain">
+									<f:setPropertyActionListener value="#{'I'}" target="#{itemPedidoMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Editar" icon="fa fa-edit" update="pnBtnsList,fmMain" disabled="#{itemPedidoMB.entity.id eq null}">
+									<f:setPropertyActionListener value="#{'U'}" target="#{itemPedidoMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{itemPedidoMB.delete}" update="pnBtnsList" disabled="#{itemPedidoMB.entity.id eq null}">
+									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtItensPedido').clearFilters(); PF('dtItensPedido').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:spacer/>
+							</p:panelGrid>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup id="pgForm" rendered="#{!itemPedidoMB.modoList}">
+						<p:panelGrid id="pnFormItemPedido" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:outputLabel value="Código: " />
+							<p:inputText id="itCodigo" value="#{itemPedidoMB.entity.id}" maxlength="100" disabled="true"/>
+
+							<p:outputLabel value="Nome: " />
+							<p:inputText id="itNome" value="#{itemPedidoMB.entity.nome}" maxlength="100"/>
+
+							<p:outputLabel value="Preço: " />
+							<p:inputNumber id="inPreco" widgetVar="inPreco" value="#{itemPedidoMB.entity.preco}" symbol="R$ " decimalSeparator="," thousandSeparator="." />
+
+							<p:spacer />
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validItemPedido()" action="#{itemPedidoMB.save}" update="fmMain" />
+									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{itemPedidoMB.changeModoList}" update="fmMain" />
+								</p:panelGrid>
+							</h:panelGroup>
+						</p:panelGrid>
+					</h:panelGroup>
+
+				</h:form>
+
+			</div>
+
+		</ui:define>
+	</ui:decorate>
+</html>
