@@ -25,4 +25,8 @@ public class UsuarioBO extends AbstractBO<Usuario, Usuario> {
     public Usuario login(final Usuario usuario) throws Exception {
         return usuarioDAO.login(usuario);
     }
+
+    public Usuario getToEmail(final String email) throws Exception {
+        return usuarioDAO.getToEmail(email);
+    }
 }

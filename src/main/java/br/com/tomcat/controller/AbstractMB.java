@@ -22,6 +22,7 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
     private DTO dto;
     private LazyDataModel<DTO> lazyDataModel;
     private Character modo = EnumModo.LIST.getDescricao();
+    private String filterGlobal;
 
     public abstract AbstractBO<E, DTO> getBO();
 
@@ -61,6 +62,21 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
     public void loadLazyDataModel() {
         setLazyDataModel(new LazyDataModel<DTO>() {
             @Override
+            public List<DTO> load(int first, int pageSize, String sortField, SortOrder sortOrder) {
+                try {
+                    setRowCount(getRowCount() == 0 ? getBO().getRowCountListAll(getFilterGlobal()) : getRowCount());
+                    return getBO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, getFilterGlobal());
+                }catch(Exception e) {
+                    JSFUtil.addError(e);
+                }
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    public void loadLazyDataModelFilters() {
+        setLazyDataModel(new LazyDataModel<DTO>() {
+            @Override
             public List<DTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
                 try {
                     setRowCount(first == 0 ? getBO().getRowCountListAll(filters) : getRowCount());
@@ -96,6 +112,11 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
         }catch(Exception e) {
             JSFUtil.addError(e);
         }
+    }
+
+    public void clearFilters() {
+        filterGlobal = null;
+        loadLazyDataModel();
     }
 
     public void changeModoList() {
@@ -142,4 +163,11 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
         return EnumModo.VIEW.getDescricao().equals(modo);
     }
 
+    public String getFilterGlobal() {
+        return filterGlobal;
+    }
+
+    public void setFilterGlobal(String filterGlobal) {
+        this.filterGlobal = filterGlobal;
+    }
 }

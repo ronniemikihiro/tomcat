@@ -1,18 +1,13 @@
 package br.com.tomcat.dao;
 
 import br.com.tomcat.entity.ItemPedido;
-import br.com.tomcat.entity.Usuario;
-import br.com.tomcat.enums.EnumPerfil;
 import br.com.tomcat.enums.EnumSortOrder;
-import br.com.tomcat.util.ObjectUtil;
 import br.com.tomcat.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,9 +34,10 @@ public class ItemPedidoDAO extends AbstractDAO<ItemPedido, ItemPedido> {
         };
     }
 
-    public int getRowCountListAll(final Map<String, Object> filters) throws Exception {
+    @Override
+    public int getRowCountListAll(final String filterGlobal) throws Exception {
         try {
-            final String where = filters.isEmpty() ? "" : getWhereLazyDataModel(filters);
+            final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_item_pedido " + where, Integer.class);
         }catch(Exception e) {
             log.debug(e);
@@ -50,10 +46,11 @@ public class ItemPedidoDAO extends AbstractDAO<ItemPedido, ItemPedido> {
         }
     }
 
-    public List<ItemPedido> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
+    @Override
+    public List<ItemPedido> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
             final String sql = "select id, nome, preco from tb_item_pedido ";
-            final String where = filters.isEmpty() ? "" : getWhereLazyDataModel(filters);
+            final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             final String order = " order by " + (StringUtil.isNull(sortField) ? "nome" : sortField) + (EnumSortOrder.getEnumOrder(sortOrder.name()).getDescricao());
             final String limit = " limit " + first + "," + pageSize;
             return jdbcTemplate.query(sql + where + order + limit, getRowMapper());
@@ -64,31 +61,10 @@ public class ItemPedidoDAO extends AbstractDAO<ItemPedido, ItemPedido> {
         }
     }
 
-    public void insert(final ItemPedido itemPedido) throws Exception {
+    public List<ItemPedido> listAll() throws Exception {
         try{
-            final String sql = "insert into tb_item_pedido(nome, preco) values (?, ?)";
-            jdbcTemplate.update(sql, itemPedido.getNome(), itemPedido.getPreco());
-        }catch(Exception e) {
-            log.debug(e);
-            log.error(e);
-            throw new Exception(e);
-        }
-    }
-
-    public void update(final ItemPedido itemPedido) throws Exception {
-        try{
-            final String sql = "update tb_item_pedido set nome=?, preco=? where id=?";
-            jdbcTemplate.update(sql, itemPedido.getNome(), itemPedido.getPreco(), itemPedido.getId());
-        }catch(Exception e) {
-            log.debug(e);
-            log.error(e);
-            throw new Exception(e);
-        }
-    }
-
-    public void delete(final ItemPedido itemPedido) throws Exception {
-        try{
-            jdbcTemplate.update("delete from tb_item_pedido where id=?", itemPedido.getId());
+            final String sql = "select id, nome, preco from tb_item_pedido order by nome";
+            return jdbcTemplate.query(sql, getRowMapper());
         }catch(Exception e) {
             log.debug(e);
             log.error(e);

@@ -1,6 +1,7 @@
 package br.com.tomcat.controller;
 
 import br.com.tomcat.entity.Usuario;
+import br.com.tomcat.enums.EnumAtivo;
 import br.com.tomcat.enums.EnumPerfil;
 import br.com.tomcat.service.AbstractBO;
 import br.com.tomcat.service.UsuarioBO;
@@ -54,6 +55,7 @@ public class UsuarioMB extends AbstractMB<Usuario, Usuario> {
     @Override
     public void save() {
         getEntity().setSenha(EncryptionUtil.encrypt(getEntity().getSenha()));
+        getEntity().setSenhaAtiva(EnumAtivo.S);
         super.save();
     }
 

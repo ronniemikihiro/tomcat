@@ -1,8 +1,10 @@
 package br.com.tomcat.dao;
 
 import br.com.tomcat.entity.Usuario;
+import br.com.tomcat.enums.EnumAtivo;
 import br.com.tomcat.enums.EnumPerfil;
 import br.com.tomcat.enums.EnumSortOrder;
+import br.com.tomcat.exception.UserEmailInvalidException;
 import br.com.tomcat.exception.UserPasswordInvalidException;
 import br.com.tomcat.util.StringUtil;
 import org.apache.log4j.Logger;
@@ -33,15 +35,17 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
             usuario.setId(rs.getLong("id"));
             usuario.setLogin(rs.getString("login"));
             usuario.setSenha(rs.getString("senha"));
+            usuario.setEmail(rs.getString("email"));
             usuario.setNome(rs.getString("nome"));
             usuario.setPerfil(EnumPerfil.getEnumPerfil(rs.getString("perfil")));
+            usuario.setSenhaAtiva(EnumAtivo.getEnumAtivo(rs.getString("senha_ativa")));
             return usuario;
         };
     }
 
-    public int getRowCountListAll(final Map<String, Object> filters) throws Exception {
+    public int getRowCountListAll(final String filterGlobal) throws Exception {
         try {
-            final String where = filters.isEmpty() ? "" : getWhereLazyDataModel(filters);
+            final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_usuario " + where, Integer.class);
         }catch(Exception e) {
             log.debug(e);
@@ -50,10 +54,10 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
         }
     }
 
-    public List<Usuario> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
+    public List<Usuario> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
-            final String sql = "select id, login, senha, nome, perfil from tb_usuario ";
-            final String where = filters.isEmpty() ? "" : getWhereLazyDataModel(filters);
+            final String sql = "select id, login, senha, email, nome, perfil, senha_ativa from tb_usuario ";
+            final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             final String order = " order by " + (StringUtil.isNull(sortField) ? "nome" : sortField) + (EnumSortOrder.getEnumOrder(sortOrder.name()).getDescricao());
             final String limit = " limit " + first + "," + pageSize;
             return jdbcTemplate.query(sql + where + order + limit, getRowMapper());
@@ -64,43 +68,25 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
         }
     }
 
-    public void insert(final Usuario usuario) throws Exception {
-        try{
-            final String sql = "insert into tb_usuario(login, senha, nome, perfil) values (?, ?, ?, ?)";
-            jdbcTemplate.update(sql, usuario.getLogin(), usuario.getSenha(), usuario.getNome(), usuario.getPerfil().name());
-        }catch(Exception e) {
-            log.debug(e);
-            log.error(e);
-            throw new Exception(e);
-        }
-    }
-
-    public void update(final Usuario usuario) throws Exception {
-        try{
-            final String sql = "update tb_usuario set login=?, senha=?, nome=?, perfil=? where id=?";
-            jdbcTemplate.update(sql, usuario.getLogin(), usuario.getSenha(), usuario.getNome(), usuario.getPerfil().name(), usuario.getId());
-        }catch(Exception e) {
-            log.debug(e);
-            log.error(e);
-            throw new Exception(e);
-        }
-    }
-
-    public void delete(final Usuario usuario) throws Exception {
-        try{
-            jdbcTemplate.update("delete from tb_usuario where id=?", usuario.getId());
-        }catch(Exception e) {
-            log.debug(e);
-            log.error(e);
-            throw new Exception(e);
-        }
-    }
-
     public Usuario login(final Usuario usuario) throws Exception {
         try {
-            return jdbcTemplate.queryForObject("select id, login, senha, nome, perfil from tb_usuario where login=? and senha=?", new Object[]{usuario.getLogin(), usuario.getSenha()}, getRowMapper());
+            return jdbcTemplate.queryForObject("select id, login, senha, email, nome, perfil, senha_ativa from tb_usuario where login=? and senha=?",
+                    new Object[]{usuario.getLogin(), usuario.getSenha()}, getRowMapper());
         }catch(EmptyResultDataAccessException e) {
             throw new UserPasswordInvalidException();
+        }catch(Exception e) {
+            log.debug(e);
+            log.error(e);
+            throw new Exception(e);
+        }
+    }
+
+    public Usuario getToEmail(final String email) throws Exception {
+        try {
+            return jdbcTemplate.queryForObject("select id, login, senha, email, nome, perfil, senha_ativa from tb_usuario where email=?",
+                    new Object[]{email}, getRowMapper());
+        }catch(EmptyResultDataAccessException e) {
+            throw new UserEmailInvalidException();
         }catch(Exception e) {
             log.debug(e);
             log.error(e);

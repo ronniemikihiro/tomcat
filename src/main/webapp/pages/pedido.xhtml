@@ -1,0 +1,190 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core">
+	
+	<ui:decorate template="template.xhtml">
+		<ui:define name="centro">
+
+			<div class="divCenterPage ui-fluid">
+
+				<h:form id="fmMain">
+
+					<h:outputText value="Pedido" styleClass="titulo" />
+
+					<br/><br/>
+
+					<h:panelGroup id="pgList" rendered="#{pedidoMB.modoList}">
+						<p:dataTable id="dtPedido"
+									 widgetVar="dtPedido"
+									 reflow="true"
+									 value="#{pedidoMB.lazyDataModel}"
+									 var="pedidoDTO"
+									 selection="#{pedidoMB.dto}"
+									 rowKey="#{pedidoDTO.id}"
+									 emptyMessage="Nenhum registro encontrado."
+									 filterEvent="enter"
+									 lazy="true"
+									 paginator="true"
+									 rows="10"
+									 paginatorPosition="bottom"
+									 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									 rowsPerPageTemplate="10,25,50"
+									 currentPageReportTemplate="{currentPage}/{totalPages}">
+
+							<f:facet name="header">
+								<p:inputText value="#{pedidoMB.filterGlobal}" placeholder="Pesquisar por Código/Cliente" style="width: 70%"/>
+								<p:spacer width="10"/>
+								<p:commandButton icon="fa fa-search" onclick="PF('dtPedido').filter()" style="width: 40px"/>
+							</f:facet>
+
+							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
+							<p:ajax event="page" listener="#{pedidoMB.setDto(null)}" update="fmMain:pnBtnsList" />
+							<p:ajax event="filter" listener="#{pedidoMB.setDto(null)}" update="fmMain:pnBtnsList" />
+
+							<p:column selectionMode="single" styleClass="colunaRadio" />
+
+							<p:column headerText="Código" sortBy="#{pedidoDTO.id_pedido}">
+								<h:outputText value="#{pedidoDTO.id}" />
+							</p:column>
+
+							<p:column headerText="Cliente" sortBy="#{pedidoDTO.nome_cliente}">
+								<h:outputText value="#{pedidoDTO.nomeCliente}" />
+							</p:column>
+
+							<p:column headerText="Atendente" sortBy="#{pedidoDTO.nome_atendente}">
+								<h:outputText value="#{pedidoDTO.nomeAtendente}" />
+							</p:column>
+
+							<p:column headerText="Data" sortBy="#{pedidoDTO.data}">
+								<h:outputText value="#{pedidoDTO.data}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br/>
+
+						<div align="center">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid">
+								<p:spacer/>
+								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{pedidoMB.newEntity}" update="pnBtnsList,fmMain">
+									<f:setPropertyActionListener value="#{'I'}" target="#{pedidoMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Editar" icon="fa fa-edit" action="#{pedidoMB.loadEntity}" update="pnBtnsList,fmMain" disabled="#{pedidoMB.dto.id eq null}">
+									<f:setPropertyActionListener value="#{'U'}" target="#{pedidoMB.modo}" />
+								</p:commandButton>
+								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{pedidoMB.delete}" update="pnBtnsList" disabled="#{pedidoMB.dto.id eq null}">
+									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtPedido').unselectAllRows()" action="#{pedidoMB.clearFilters}" update="pnBtnsList,dtPedido" />
+								<p:spacer/>
+							</p:panelGrid>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup id="pgForm" rendered="#{!pedidoMB.modoList}">
+						<p:panelGrid id="pnFormPedido" columns="1" columnClasses="ui-grid-col-9" layout="grid">
+							<h:panelGroup>
+								<p:outputLabel value="Código: " />
+								<p:inputText id="itCodigo" value="#{pedidoMB.entity.id}" disabled="true"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Atendente: " />
+								<p:inputText id="itNome" value="#{pedidoMB.entity.atendente.nome}" disabled="true"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Cliente: " />
+								<p:selectOneMenu id="somCliente" widgetVar="somCliente" value="#{pedidoMB.entity.cliente}" filter="true" filterMatchMode="contains" converter="converterEntity" disabled="#{pedidoMB.modoUpdate}">
+									<f:selectItem itemValue="#{null}" itemLabel="" />
+									<f:selectItems value="#{pedidoMB.vo.listClientes}" var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+
+							<p:panel header="Pedidos">
+								<h:panelGroup>
+									<p:outputLabel value="Item Pedido: " />
+									<p:selectOneMenu id="somItemPedido" widgetVar="somItemPedido" value="#{pedidoMB.vo.itemPedidoCliente.itemPedido}" filter="true" filterMatchMode="contains" converter="converterEntity">
+										<f:selectItem itemValue="#{null}" itemLabel="" />
+										<f:selectItems value="#{pedidoMB.vo.listItensPedido}" var="itemPedido" itemValue="#{itemPedido}" itemLabel="#{itemPedido.nome} -- #{itemPedido.precoRealMoney}" />
+									</p:selectOneMenu>
+								</h:panelGroup>
+
+								<h:panelGroup>
+									<p:outputLabel value="Quant: " />
+									<p:inputText id="itQuant" value="#{pedidoMB.vo.itemPedidoCliente.quantidade}" maxlength="3">
+										<p:keyFilter regEx="/[\d\-]/" />
+									</p:inputText>
+								</h:panelGroup>
+
+								<h:panelGroup>
+									<p:panelGrid id="pnBtnAdcItemPedidoCliente" columns="2" layout="grid">
+										<p:spacer />
+										<p:commandButton value="Adicionar" icon="fa fa-plus-circle" onclick="return validItemPedidoCliente()" action="#{pedidoMB.addItemPedidoCliente}" update="pnFormPedido" />
+									</p:panelGrid>
+								</h:panelGroup>
+
+								<h:panelGroup>
+									<p:dataTable id="dtItemPedidoCliente"
+												 widgetVar="dtItemPedidoCliente"
+												 reflow="true"
+												 value="#{pedidoMB.entity.listItemPedidoCliente}"
+												 var="itemPedidoCliente"
+												 scrollable="true"
+												 scrollHeight="200"
+												 emptyMessage="Nenhum registro encontrado.">
+
+										<p:column headerText="Data/Hora">
+											<h:outputText value="#{itemPedidoCliente.dataHoraFormatPT}" />
+										</p:column>
+
+										<p:column headerText="Item P.">
+											<h:outputText value="#{itemPedidoCliente.itemPedido.nome}" />
+										</p:column>
+
+										<p:column headerText="Quant.">
+											<h:outputText value="#{itemPedidoCliente.quantidade}" />
+										</p:column>
+
+										<p:column headerText="Pr. Unit.">
+											<h:outputText value="#{itemPedidoCliente.itemPedido.preco}">
+												<f:convertNumber currencySymbol="R$" type="currency" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Pr. Total">
+											<h:outputText value="#{itemPedidoCliente.totalPreco}">
+												<f:convertNumber currencySymbol="R$" type="currency" />
+											</h:outputText>
+										</p:column>
+
+										<f:facet name="footer">
+											<div style="text-align: right">
+												<h:outputText value="Total: "/>
+												<h:outputText id="totalHorasAtividades" value="#{pedidoMB.total}">
+													<f:convertNumber currencySymbol="R$" type="currency" />
+												</h:outputText>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</h:panelGroup>
+							</p:panel>
+
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid">
+									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validPedido()" action="#{pedidoMB.save}" update="fmMain" />
+									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{pedidoMB.changeModoList}" update="fmMain" />
+								</p:panelGrid>
+							</h:panelGroup>
+						</p:panelGrid>
+					</h:panelGroup>
+
+				</h:form>
+
+			</div>
+
+		</ui:define>
+	</ui:decorate>
+</html>

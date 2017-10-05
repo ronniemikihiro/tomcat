@@ -33,17 +33,23 @@
 									 rowsPerPageTemplate="10,25,50"
 									 currentPageReportTemplate="{currentPage}/{totalPages}">
 
+							<f:facet name="header">
+								<p:inputText value="#{clienteMB.filterGlobal}" placeholder="Pesquisar por Código/Nome" style="width: 70%"/>
+								<p:spacer width="10"/>
+								<p:commandButton icon="fa fa-search" onclick="PF('dtCliente').filter()" style="width: 40px"/>
+							</f:facet>
+
 							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
 							<p:ajax event="page" listener="#{clienteMB.setDto(null)}" update="fmMain:pnBtnsList" />
 							<p:ajax event="filter" listener="#{clienteMB.setDto(null)}" update="fmMain:pnBtnsList" />
 
 							<p:column selectionMode="single" styleClass="colunaRadio" />
 
-							<p:column headerText="Código" sortBy="#{clienteDTO.id}" filterBy="#{'.c.id like #%filter%#'}">
+							<p:column headerText="Código" sortBy="#{clienteDTO.id_cliente}">
 								<h:outputText value="#{clienteDTO.id}" />
 							</p:column>
 
-							<p:column headerText="Nome" sortBy="#{clienteDTO.nome}" filterBy="#{'.c.nome like #%filter%#'}">
+							<p:column headerText="Nome" sortBy="#{clienteDTO.nome}">
 								<h:outputText value="#{clienteDTO.nome}" />
 							</p:column>
 
@@ -56,7 +62,7 @@
 						<br/>
 
 						<div align="center">
-							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid">
 								<p:spacer/>
 								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{clienteMB.newEntity}" update="pnBtnsList,fmMain">
 									<f:setPropertyActionListener value="#{'I'}" target="#{clienteMB.modo}" />
@@ -67,53 +73,76 @@
 								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{clienteMB.delete}" update="pnBtnsList" disabled="#{clienteMB.dto.id eq null}">
 									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
 								</p:commandButton>
-								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtCliente').clearFilters(); PF('dtCliente').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtCliente').unselectAllRows()" action="#{clienteMB.clearFilters}" update="pnBtnsList,dtCliente" />
 								<p:spacer/>
 							</p:panelGrid>
 						</div>
 					</h:panelGroup>
 
 					<h:panelGroup id="pgForm" rendered="#{!clienteMB.modoList}">
-						<p:panelGrid id="pnFormCliente" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
-							<p:outputLabel value="Código: " />
-							<p:inputText id="itCodigo" value="#{clienteMB.entity.id}" maxlength="100" disabled="true"/>
-
-							<p:outputLabel value="Nome: " />
-							<p:inputText id="itNome" value="#{clienteMB.entity.nome}" maxlength="100"/>
-
-							<p:outputLabel value="CPF: " />
-							<p:inputMask id="imCPF" mask="999.999.999-99" value="#{clienteMB.entity.cpf}" />
-
-							<p:outputLabel value="Telefone: " />
-							<p:inputMask id="imTelefone" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.telefone}" />
-
-							<p:outputLabel value="Celular1: " />
-							<p:inputMask id="imCelular1" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular1}" />
-
-							<p:outputLabel value="Celular2: " />
-							<p:inputMask id="imCelular2" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular2}" />
-
-							<p:outputLabel value="Logradouro: " />
-							<p:inputText id="itLogradouro" value="#{clienteMB.entity.dadosPessoa.logradouro}" maxlength="100"/>
-
-							<p:outputLabel value="Complemento: " />
-							<p:inputText id="itComplemento" value="#{clienteMB.entity.dadosPessoa.complemento}" maxlength="100"/>
-
-							<p:outputLabel value="CEP: " />
-							<p:inputMask id="itCEP" mask="99999-999" value="#{clienteMB.entity.dadosPessoa.cep}" />
-
-							<p:outputLabel value="Bairro: " />
-							<p:inputText id="itBairro" value="#{clienteMB.entity.dadosPessoa.bairro}" maxlength="100"/>
-
-							<p:outputLabel value="Cidade: " />
-							<p:inputText id="itCidade" value="#{clienteMB.entity.dadosPessoa.cidade}" maxlength="100"/>
-
-							<p:outputLabel value="Estado: " />
-							<p:inputText id="itEstado" value="#{clienteMB.entity.dadosPessoa.estado}" maxlength="100"/>
-
-							<p:spacer />
+						<p:panelGrid id="pnFormCliente" columns="1" columnClasses="ui-grid-col-7" layout="grid">
 							<h:panelGroup>
-								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:outputLabel value="Código: " />
+								<p:inputText id="itCodigo" value="#{clienteMB.entity.id}" disabled="true"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Nome: " />
+								<p:inputText id="itNome" value="#{clienteMB.entity.nome}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="CPF: " />
+								<p:inputMask id="imCPF" mask="999.999.999-99" value="#{clienteMB.entity.cpf}" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Telefone: " />
+								<p:inputMask id="imTelefone" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.telefone}" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Celular1: " />
+								<p:inputMask id="imCelular1" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular1}" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Celular2: " />
+								<p:inputMask id="imCelular2" mask="(999) 9? 9999-9999" value="#{clienteMB.entity.dadosPessoa.celular2}" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Logradouro: " />
+								<p:inputText id="itLogradouro" value="#{clienteMB.entity.dadosPessoa.logradouro}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Complemento: " />
+								<p:inputText id="itComplemento" value="#{clienteMB.entity.dadosPessoa.complemento}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="CEP: " />
+								<p:inputMask id="itCEP" mask="99999-999" value="#{clienteMB.entity.dadosPessoa.cep}" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Bairro: " />
+								<p:inputText id="itBairro" value="#{clienteMB.entity.dadosPessoa.bairro}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Cidade: " />
+								<p:inputText id="itCidade" value="#{clienteMB.entity.dadosPessoa.cidade}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Estado: " />
+								<p:inputText id="itEstado" value="#{clienteMB.entity.dadosPessoa.estado}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid">
 									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validCliente()" action="#{clienteMB.save}" update="fmMain" />
 									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{clienteMB.changeModoList}" update="fmMain" />
 								</p:panelGrid>

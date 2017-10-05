@@ -30,4 +30,8 @@ public class ClienteBO extends AbstractBO<Cliente, ClienteDTO> {
     public AbstractDAO<Cliente, ClienteDTO> getDAO() {
         return clienteDAO;
     }
+
+    public List<Cliente> listAll() throws Exception {
+        return clienteDAO.listAll();
+    }
 }

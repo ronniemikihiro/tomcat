@@ -6,6 +6,8 @@ import br.com.tomcat.entity.ItemPedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by ronnie-msl on 13/09/17.
  */
@@ -18,5 +20,9 @@ public class ItemPedidoBO extends AbstractBO<ItemPedido, ItemPedido> {
     @Override
     public AbstractDAO<ItemPedido, ItemPedido> getDAO() {
         return itemPedidoDAO;
+    }
+
+    public List<ItemPedido> listAll() throws Exception {
+        return itemPedidoDAO.listAll();
     }
 }

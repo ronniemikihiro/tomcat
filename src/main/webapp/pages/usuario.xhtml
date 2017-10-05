@@ -34,31 +34,31 @@
 									 rowsPerPageTemplate="10,25,50"
 									 currentPageReportTemplate="{currentPage}/{totalPages}">
 
+							<f:facet name="header">
+								<p:inputText value="#{usuarioMB.filterGlobal}" placeholder="Pesquisar por Código/Nome" style="width: 70%"/>
+								<p:spacer width="10"/>
+								<p:commandButton icon="fa fa-search" onclick="PF('dtUsuarios').filter()" style="width: 40px"/>
+							</f:facet>
+
 							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
 							<p:ajax event="page" listener="#{usuarioMB.setEntity(null)}" update="fmMain:pnBtnsList" />
 							<p:ajax event="filter" listener="#{usuarioMB.setEntity(null)}" update="fmMain:pnBtnsList" />
 
 							<p:column selectionMode="single" styleClass="colunaRadio" filterMatchMode="none"/>
 
-							<p:column headerText="Código" sortBy="#{usuario.id}" filterBy="#{'id like #filter%#'}">
+							<p:column headerText="Código" sortBy="#{usuario.id}">
 								<h:outputText value="#{usuario.id}" />
 							</p:column>
 
-							<p:column headerText="Login" sortBy="#{usuario.login}" filterBy="#{'login like #%filter%#'}">
+							<p:column headerText="Login" sortBy="#{usuario.login}">
 								<h:outputText value="#{usuario.login}" />
 							</p:column>
 
-							<p:column headerText="Nome" sortBy="#{usuario.nome}" filterBy="#{'nome like #%filter%#'}">
+							<p:column headerText="Nome" sortBy="#{usuario.nome}">
 								<h:outputText value="#{usuario.nome}" />
 							</p:column>
 
-							<p:column headerText="Perfil" sortBy="#{usuario.perfil}" filterBy="#{'perfil = #filter#'}">
-								<f:facet name="filter">
-									<p:selectOneMenu onchange="PF('dtUsuarios').filter()">
-										<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true" />
-										<f:selectItems value="#{usuarioMB.vo.enumPerfis}" var="enumPerfil" itemLabel="#{enumPerfil.descricao}" />
-									</p:selectOneMenu>
-								</f:facet>
+							<p:column headerText="Perfil" sortBy="#{usuario.perfil}">
 								<h:outputText value="#{usuario.perfil.descricao}" />
 							</p:column>
 
@@ -67,7 +67,7 @@
 						<br/>
 
 						<div align="center">
-							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid">
 								<p:spacer/>
 								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{usuarioMB.newEntity}" update="pnBtnsList,fmMain">
 									<f:setPropertyActionListener value="#{'I'}" target="#{usuarioMB.modo}" />
@@ -78,31 +78,48 @@
 								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{usuarioMB.delete}" update="pnBtnsList" disabled="#{usuarioMB.entity.id eq null}">
 									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
 								</p:commandButton>
-								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtUsuarios').clearFilters(); PF('dtUsuarios').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtUsuarios').unselectAllRows()" action="#{usuarioMB.clearFilters}" update="pnBtnsList,dtUsuarios" />
 								<p:spacer/>
 							</p:panelGrid>
 						</div>
 					</h:panelGroup>
 
 					<h:panelGroup id="pgForm" rendered="#{!usuarioMB.modoList}">
-						<p:panelGrid id="pnFormUsuario" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
-							<p:outputLabel value="Login: " />
-							<p:inputText id="itLogin" value="#{usuarioMB.entity.login}" maxlength="45" />
-
-							<p:outputLabel value="Senha: " rendered="#{usuarioMB.modoInsert}"/>
-							<p:password id="pwSenha" value="#{usuarioMB.entity.senha}" maxlength="6" rendered="#{usuarioMB.modoInsert}"/>
-
-							<p:outputLabel value="Nome: " />
-							<p:inputText id="itNome" value="#{usuarioMB.entity.nome}" maxlength="100"/>
-
-							<p:outputLabel value="Perfil: " />
-							<p:selectOneButton id="sobPerfil" widgetVar="sobPerfil" value="#{usuarioMB.entity.perfil}">
-								<f:selectItems value="#{usuarioMB.vo.enumPerfis}" var="enumPerfil" itemLabel="#{enumPerfil.descricao}" itemValue="#{enumPerfil}" />
-							</p:selectOneButton>
-
-							<p:spacer />
+						<p:panelGrid id="pnFormUsuario" columns="1" columnClasses="ui-grid-col-7" layout="grid">
 							<h:panelGroup>
-								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:outputLabel value="Código: " />
+								<p:inputText id="itCodigo" value="#{usuarioMB.entity.id}" disabled="true"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Login: " />
+								<p:inputText id="itLogin" value="#{usuarioMB.entity.login}" maxlength="50" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Senha: " rendered="#{usuarioMB.modoInsert}"/>
+								<p:password id="pwSenha" value="#{usuarioMB.entity.senha}" maxlength="6" rendered="#{usuarioMB.modoInsert}"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Email: " />
+								<p:inputText id="itEmail" value="#{usuarioMB.entity.email}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Nome: " />
+								<p:inputText id="itNome" value="#{usuarioMB.entity.nome}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Perfil: " />
+								<p:selectOneButton id="sobPerfil" widgetVar="sobPerfil" value="#{usuarioMB.entity.perfil}">
+									<f:selectItems value="#{usuarioMB.vo.enumPerfis}" var="enumPerfil" itemLabel="#{enumPerfil.descricao}" itemValue="#{enumPerfil}" />
+								</p:selectOneButton>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid">
 									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validUsuario()" action="#{usuarioMB.save}" update="fmMain:dtUsuarios" />
 									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{usuarioMB.changeModoList}" update="fmMain" />
 								</p:panelGrid>

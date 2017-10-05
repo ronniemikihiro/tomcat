@@ -24,7 +24,6 @@
 									 selection="#{itemPedidoMB.entity}"
 									 rowKey="#{itemPedido.id}"
 									 emptyMessage="Nenhum registro encontrado."
-									 filterEvent="enter"
 									 lazy="true"
 									 paginator="true"
 									 rows="10"
@@ -33,17 +32,23 @@
 									 rowsPerPageTemplate="10,25,50"
 									 currentPageReportTemplate="{currentPage}/{totalPages}">
 
+							<f:facet name="header">
+								<p:inputText value="#{itemPedidoMB.filterGlobal}" placeholder="Pesquisar por Código/Nome" style="width: 70%"/>
+								<p:spacer width="10"/>
+								<p:commandButton icon="fa fa-search" action="#{itemPedidoMB.lazyDataModel.setRowCount(0)}" oncomplete="PF('dtItensPedido').filter()" style="width: 40px"/>
+							</f:facet>
+
 							<p:ajax event="rowSelectRadio" update="fmMain:pnBtnsList" />
 							<p:ajax event="page" listener="#{itemPedidoMB.setEntity(null)}" update="fmMain:pnBtnsList" />
 							<p:ajax event="filter" listener="#{itemPedidoMB.setEntity(null)}" update="fmMain:pnBtnsList" />
 
 							<p:column selectionMode="single" styleClass="colunaRadio" />
 
-							<p:column headerText="Código" sortBy="#{itemPedido.id}" filterBy="#{'id like #filter%#'}">
+							<p:column headerText="Código" sortBy="#{itemPedido.id}">
 								<h:outputText value="#{itemPedido.id}" />
 							</p:column>
 
-							<p:column headerText="Nome" sortBy="#{itemPedido.nome}" filterBy="#{'nome like #%filter%#'}">
+							<p:column headerText="Nome" sortBy="#{itemPedido.nome}">
 								<h:outputText value="#{itemPedido.nome}" />
 							</p:column>
 
@@ -58,7 +63,7 @@
 						<br/>
 
 						<div align="center">
-							<p:panelGrid id="pnBtnsList" columns="6" layout="grid" styleClass="ui-panelgrid-blank">
+							<p:panelGrid id="pnBtnsList" columns="6" layout="grid">
 								<p:spacer/>
 								<p:commandButton value="Novo" icon="fa fa-plus-circle" action="#{itemPedidoMB.newEntity}" update="pnBtnsList,fmMain">
 									<f:setPropertyActionListener value="#{'I'}" target="#{itemPedidoMB.modo}" />
@@ -69,26 +74,31 @@
 								<p:commandButton value="Excluir" icon="fa fa-trash" action="#{itemPedidoMB.delete}" update="pnBtnsList" disabled="#{itemPedidoMB.entity.id eq null}">
 									<p:confirm header="Atenção" message="Confirma a exclusão do registro?" icon="ui-icon-alert" />
 								</p:commandButton>
-								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtItensPedido').clearFilters(); PF('dtItensPedido').unselectAllRows()" update="pnBtnsList,fmMain" />
+								<p:commandButton value="Limpar" icon="fa fa-refresh" onclick="PF('dtItensPedido').unselectAllRows()" action="#{itemPedidoMB.clearFilters}" update="pnBtnsList,dtItensPedido"/>
 								<p:spacer/>
 							</p:panelGrid>
 						</div>
 					</h:panelGroup>
 
 					<h:panelGroup id="pgForm" rendered="#{!itemPedidoMB.modoList}">
-						<p:panelGrid id="pnFormItemPedido" columns="2" columnClasses="ui-grid-col-1,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank">
-							<p:outputLabel value="Código: " />
-							<p:inputText id="itCodigo" value="#{itemPedidoMB.entity.id}" maxlength="100" disabled="true"/>
-
-							<p:outputLabel value="Nome: " />
-							<p:inputText id="itNome" value="#{itemPedidoMB.entity.nome}" maxlength="100"/>
-
-							<p:outputLabel value="Preço: " />
-							<p:inputNumber id="inPreco" widgetVar="inPreco" value="#{itemPedidoMB.entity.preco}" symbol="R$ " decimalSeparator="," thousandSeparator="." />
-
-							<p:spacer />
+						<p:panelGrid id="pnFormItemPedido" columns="1" columnClasses="ui-grid-col-7" layout="grid">
 							<h:panelGroup>
-								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+								<p:outputLabel value="Código: " />
+								<p:inputText id="itCodigo" value="#{itemPedidoMB.entity.id}" disabled="true"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Nome: " />
+								<p:inputText id="itNome" value="#{itemPedidoMB.entity.nome}" maxlength="45"/>
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:outputLabel value="Preço: " />
+								<p:inputNumber id="inPreco" widgetVar="inPreco" value="#{itemPedidoMB.entity.preco}" symbol="R$ " decimalSeparator="," thousandSeparator="." maxValue="999999" />
+							</h:panelGroup>
+
+							<h:panelGroup>
+								<p:panelGrid id="pnBtnsForm" columns="2" layout="grid">
 									<p:commandButton value="Salvar" icon="fa fa-save" onclick="return validItemPedido()" action="#{itemPedidoMB.save}" update="fmMain" />
 									<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{itemPedidoMB.changeModoList}" update="fmMain" />
 								</p:panelGrid>

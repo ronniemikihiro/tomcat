@@ -31,3 +31,18 @@
     left: 93% !important;
     top: 6% !important;
 }
+
+.backGreen {
+    background: green;
+    color: white;
+}
+
+.backRed {
+    background: red;
+    color: white;
+}
+
+.backOrange {
+    background: yellow;
+    color: white;
+}

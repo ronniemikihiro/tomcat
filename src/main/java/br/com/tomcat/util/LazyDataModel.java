@@ -17,6 +17,13 @@ public class LazyDataModel<E extends Entity> extends org.primefaces.model.LazyDa
                         final String sortField,
                         final SortOrder sortOrder,
                         final Map<String, Object> filters) {
+        return load(first, pageSize, sortField, sortOrder);
+    }
+
+    public List<E> load(final int first,
+                        final int pageSize,
+                        final String sortField,
+                        final SortOrder sortOrder) {
         throw new UnsupportedOperationException("Lazy loading is not implemented.");
     }
 

@@ -14,11 +14,12 @@
 	
 	<context:annotation-config />
 	
-	<context:component-scan base-package = "br.com.tomcat" />
+	<context:component-scan base-package="br.com" />
 	
-	<tx:annotation-driven transaction-manager = "txManager"/>
+	<tx:annotation-driven transaction-manager="springTransactionManager"/> <!-- TRANSACTION SPRING -->
+	<tx:annotation-driven transaction-manager="jpaTransactionManager"/> <!-- TRANSACTION JPA -->
 	
-	<bean id = "dataSource" class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		
 		<!-- PostgreSQL -->
 <!-- 		<property name="driverClassName" value="org.postgresql.Driver" /> -->
@@ -28,12 +29,13 @@
 
 		<!-- MySQL -->
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/tomcat" />
+		<property name="url" value="jdbc:mysql://localhost:3306/tomcat_jpa_jdbc" />
 		<property name="username" value="root" />
 		<property name="password" value="123" />
 	
 	</bean>
 
+	<!-- TRANSACTION SPRING -->
 	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
 		<constructor-arg name="dataSource" ref="dataSource"/>
 	</bean>
@@ -42,8 +44,18 @@
 		<constructor-arg name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="springTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+
+
+	<!-- TRANSACTION JPA -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="tomcat" />
+	</bean>
+
+	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+
 </beans>

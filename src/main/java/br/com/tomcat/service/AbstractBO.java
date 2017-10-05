@@ -19,6 +19,14 @@ public abstract class AbstractBO<E extends Entity, DTO extends Entity> {
 
     public abstract AbstractDAO<E, DTO> getDAO();
 
+    public int getRowCountListAll(final String filterGlobal) throws Exception {
+        return getDAO().getRowCountListAll(filterGlobal);
+    }
+
+    public List<DTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+        return getDAO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, filterGlobal);
+    }
+
     public int getRowCountListAll(final Map<String, Object> filters) throws Exception {
         return getDAO().getRowCountListAll(filters);
     }
@@ -31,17 +39,17 @@ public abstract class AbstractBO<E extends Entity, DTO extends Entity> {
         return getDAO().loadEntity(dto);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "jpaTransactionManager", rollbackFor = Exception.class)
     public void insert(final E entity) throws Exception {
         getDAO().insert(entity);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "jpaTransactionManager", rollbackFor = Exception.class)
     public void update(final E entity) throws Exception {
         getDAO().update(entity);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "jpaTransactionManager", rollbackFor = Exception.class)
     public void delete(final E entity) throws Exception {
         getDAO().delete(entity);
     }

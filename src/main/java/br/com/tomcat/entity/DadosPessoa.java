@@ -2,23 +2,49 @@ package br.com.tomcat.entity;
 
 import br.com.tomcat.util.StringUtil;
 
+import javax.persistence.*;
+import javax.persistence.Entity;
+
 /**
  * Created by ronnie-msl on 13/09/17.
  * Tabela BD: tb_dados_pessoa
  */
-public class DadosPessoa implements Entity<Long> {
+@Entity
+@Table(name = "tb_dados_pessoa")
+public class DadosPessoa implements br.com.tomcat.entity.Entity<Long> {
 
     public static final String TABLE_NAME = "tb_dados_pessoa";
 
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "telefone",length = 20)
     private String telefone;
+
+    @Column(name = "celular1", nullable = false, length = 20)
     private String celular1;
+
+    @Column(name = "celular2", length = 20)
     private String celular2;
+
+    @Column(name = "logradouro", length = 45)
     private String logradouro;
+
+    @Column(name = "complemento", length = 45)
     private String complemento;
+
+    @Column(name = "cep", length = 20)
     private String cep;
+
+    @Column(name = "bairro", length = 45)
     private String bairro;
+
+    @Column(name = "cidade", length = 45)
     private String cidade;
+
+    @Column(name = "estado", length = 45)
     private String estado;
 
     @Override
@@ -103,4 +129,18 @@ public class DadosPessoa implements Entity<Long> {
         this.estado = estado;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DadosPessoa that = (DadosPessoa) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }
