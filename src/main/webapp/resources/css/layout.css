@@ -28,7 +28,8 @@
 }
 
 .posicaoDialogCarregando {
-    left: 93% !important;
+    left: auto !important;
+    right: 3% !important;
     top: 6% !important;
 }
 

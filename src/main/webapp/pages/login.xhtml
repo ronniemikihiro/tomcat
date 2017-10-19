@@ -26,16 +26,16 @@
 
 		<h:form id="fmMain">
 			<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-				<p:panel style="height: 180px; width: 285px; display: flex; justify-content: center; align-items: center;">
+				<p:panel header="Login" style="height: 160px; width: 285px;">
 					<p:panelGrid id="pnFormLogin" columns="2" styleClass="ui-panelgrid-blank" rendered="#{!loginMB.showPanelEsqueceuSenha}">
 						<span class="fa fa-user" />
-						<p:inputText id="itLogin" value="#{loginMB.usuario.login}" maxlength="45" placeholder="Login" style="width: 225px;"/>
+						<p:inputText id="itLogin" value="#{loginMB.usuario.login}" maxlength="45" placeholder="Login" style="width: 190px;"/>
 
 						<span class="fa fa-lock" />
-						<p:password id="pwSenha" value="#{loginMB.usuario.senha}" maxlength="6" placeholder="Senha" style="width: 225px;"/>
+						<p:password id="pwSenha" value="#{loginMB.usuario.senha}" maxlength="6" placeholder="Senha" style="width: 190px;"/>
 
 						<p:spacer />
-						<p:commandButton value="Entrar" icon="fa fa-play-circle" onclick="return validLogin()" action="#{loginMB.login}" style="width: 234px;"/>
+						<p:commandButton value="Entrar" icon="fa fa-play-circle" onclick="return validLogin()" action="#{loginMB.login}" style="width: 199px;"/>
 
 						<p:spacer />
 						<p:commandLink value="Esqueceu sua Senha?" action="#{loginMB.setShowPanelEsqueceuSenha(true)}" update="fmMain" />
@@ -45,8 +45,8 @@
 						<h:outputText value="Digite seu email para receber sua nova senha." />
 						<p:inputText id="itEmail" value="#{loginMB.emailEsqueceuSenha}" maxlength="45" placeholder="Email" style="width: 225px;"/>
 
-						<p:commandButton value="Enviar" icon="fa fa-play-circle" onclick="return validEmailEsqueceu()" action="#{loginMB.sendEmailForgoteen}" style="width: 234px;" update="fmMain"/>
-						<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{loginMB.setShowPanelEsqueceuSenha(false)}" style="width: 234px;" update="fmMain"/>
+						<p:commandButton value="Enviar" icon="fa fa-play-circle" onclick="return validEmailEsqueceu()" action="#{loginMB.sendEmailForgoteen}" style="width: 235px;" update="fmMain"/>
+						<p:commandButton value="Voltar" icon="fa fa-chevron-circle-left" action="#{loginMB.setShowPanelEsqueceuSenha(false)}" style="width: 235px;" update="fmMain"/>
 					</p:panelGrid>
 				</p:panel>
 			</div>
