@@ -52,7 +52,7 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
     }
 
     public void loadEntity() {
-        try {
+        try{
             setEntity(getBO().loadEntity(getDto()));
         }catch(Exception e) {
             JSFUtil.addError(e);
@@ -63,9 +63,9 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
         setLazyDataModel(new LazyDataModel<DTO>() {
             @Override
             public List<DTO> load(int first, int pageSize, String sortField, SortOrder sortOrder) {
-                try {
-                    setRowCount(getRowCount() == 0 ? getBO().getRowCountListAll(getFilterGlobal()) : getRowCount());
-                    return getBO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, getFilterGlobal());
+                try{
+                    setRowCount(getRowCount() == 0 ? getBO().getRowCountLazyDataModel(getFilterGlobal()) : getRowCount());
+                    return getBO().listLazyDataModel(first, pageSize, sortField, sortOrder, getFilterGlobal());
                 }catch(Exception e) {
                     JSFUtil.addError(e);
                 }
@@ -78,9 +78,9 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
         setLazyDataModel(new LazyDataModel<DTO>() {
             @Override
             public List<DTO> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-                try {
-                    setRowCount(first == 0 ? getBO().getRowCountListAll(filters) : getRowCount());
-                    return getBO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, filters);
+                try{
+                    setRowCount(first == 0 ? getBO().getRowCountLazyDataModel(filters) : getRowCount());
+                    return getBO().listLazyDataModel(first, pageSize, sortField, sortOrder, filters);
                 }catch(Exception e) {
                     JSFUtil.addError(e);
                 }
@@ -90,11 +90,11 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
     }
 
     public void save() {
-        try {
+        try{
             if(ObjectUtil.isNull(getEntity().getId())) {
                 getBO().insert(getEntity());
                 JSFUtil.addInfo("Cadastro realizado com sucesso!");
-            }else {
+            }else{
                 getBO().update(getEntity());
                 JSFUtil.addInfo("Alteração realizado com sucesso!");
             }
@@ -105,7 +105,7 @@ public abstract class AbstractMB<E extends Entity, DTO extends Entity> {
     }
 
     public void delete() {
-        try {
+        try{
             getBO().delete(getEntity());
             JSFUtil.addInfo("Exclusão realizado com sucesso!");
             JSFUtil.goPage(getPage());

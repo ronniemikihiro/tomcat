@@ -6,6 +6,7 @@ import br.com.tomcat.exception.NegocioException;
 import br.com.tomcat.service.UsuarioBO;
 import br.com.tomcat.util.EncryptionUtil;
 import br.com.tomcat.util.JSFUtil;
+import br.com.tomcat.util.Menu;
 import br.com.tomcat.util.StringUtil;
 import org.apache.commons.mail.SimpleEmail;
 import org.simplejavamail.email.Email;
@@ -40,6 +41,7 @@ public class LoginMB {
     private Usuario usuario;
     private boolean showPanelEsqueceuSenha;
     private String emailEsqueceuSenha;
+    private Menu menu;
 
     @PostConstruct
     private void init() {
@@ -51,6 +53,7 @@ public class LoginMB {
             usuario.setSenha(EncryptionUtil.encrypt(usuario.getSenha()));
             usuario = usuarioBO.login(usuario);
             JSFUtil.addPropSession("usuario", usuario);
+            createMenu();
             JSFUtil.goPage("index.xhtml");
             showPanelEsqueceuSenha = false;
         }catch(NegocioException e) {
@@ -69,7 +72,7 @@ public class LoginMB {
 
     public void sendEmailForgoteen() {
         try {
-            final Usuario usuario = usuarioBO.getToEmail(emailEsqueceuSenha.trim());
+            final Usuario usuario = usuarioBO.getByEmail(emailEsqueceuSenha.trim());
             final String passwordRandom = StringUtil.getPasswordRandom();
 
 //            new Mailer("smtp.gmail.com", 587, "ronniemikihiro@gmail.com", "matrix0139")
@@ -141,6 +144,10 @@ public class LoginMB {
         }
     }
 
+    private void createMenu() {
+        menu = new Menu(usuario);
+    }
+
     public void setUsuarioBO(UsuarioBO usuarioBO) {
         this.usuarioBO = usuarioBO;
     }
@@ -167,5 +174,13 @@ public class LoginMB {
 
     public void setEmailEsqueceuSenha(String emailEsqueceuSenha) {
         this.emailEsqueceuSenha = emailEsqueceuSenha;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

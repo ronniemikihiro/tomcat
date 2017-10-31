@@ -35,7 +35,7 @@ public class ItemPedidoDAO extends AbstractDAO<ItemPedido, ItemPedido> {
     }
 
     @Override
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
         try {
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_item_pedido " + where, Integer.class);
@@ -47,7 +47,7 @@ public class ItemPedidoDAO extends AbstractDAO<ItemPedido, ItemPedido> {
     }
 
     @Override
-    public List<ItemPedido> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+    public List<ItemPedido> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
             final String sql = "select id, nome, preco from tb_item_pedido ";
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");

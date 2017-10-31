@@ -28,13 +28,6 @@ public class PedidoDAO extends AbstractDAO<Pedido, PedidoDTO> {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private SimpleJdbcInsert simpleJdbcInsert;
-
-    @Autowired
-    private void setDataSource(final DataSource dataSource) {
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource).usingGeneratedKeyColumns("id");
-    }
-
     private RowMapper<PedidoDTO> getRowMapperPedidoDTO() {
         return (rs, rowNum) -> {
             final PedidoDTO p = new PedidoDTO();
@@ -46,7 +39,7 @@ public class PedidoDAO extends AbstractDAO<Pedido, PedidoDTO> {
         };
     }
 
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
         try {
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "p.id", "c.nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_pedido p " + where, Integer.class);
@@ -57,7 +50,7 @@ public class PedidoDAO extends AbstractDAO<Pedido, PedidoDTO> {
         }
     }
 
-    public List<PedidoDTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+    public List<PedidoDTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
             final String sql = " select distinct p.id as id_pedido, c.nome as nome_cliente, u.nome as nome_atendente, date_format(ipc.dataHora, '%d/%m/%Y') as data from tb_pedido p " +
                                " inner join tb_cliente c on c.id = p.id_cliente " +

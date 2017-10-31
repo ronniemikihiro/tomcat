@@ -72,6 +72,30 @@
     }
 }
 
+@media screen and (min-width : 1500px) {
+    .centerPage {
+        width: 60% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media screen and (min-width : 1200px) and (max-width: 1500px) {
+    .centerPage {
+        width: 80% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media screen and (max-width : 1200px) {
+    .centerPage {
+        width: 90% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 .ui-grid-row {
     border: none !important;
 }

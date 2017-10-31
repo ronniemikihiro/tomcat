@@ -4,37 +4,12 @@
 
 	<h:form id="fmMenu">
 		<h:panelGroup styleClass="menuDefault">
-			<p:menubar>
-				<p:submenu label="Cadastro" icon="fa fa-edit">
-					<p:menuitem value="Usuário" url="/pages/usuario.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-user" />
-					<p:menuitem value="Cliente" url="/pages/cliente.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-users" />
-					<p:menuitem value="Item Pedido" url="/pages/itemPedido.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-align-justify" />
-					<p:menuitem value="Pedido" url="/pages/pedido.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-edit" />
-				</p:submenu>
-
-				<p:submenu icon="fa fa-user">
-					<p:menuitem global="false" value="#{loginMB.usuario.nome}" style="cursor: default; background: none;" />
-					<p:menuitem value="Sair" action="#{loginMB.logout}" icon="fa fa-power-off"/>
-				</p:submenu>
-			</p:menubar>
+			<p:menubar model="#{loginMB.menu.menuModel}" />
 		</h:panelGroup>
 
 		<h:panelGroup styleClass="menuShort">
 			<p:commandButton value="Menu" id="menuShort" icon="fa fa-align-justify" />
-
-			<p:tieredMenu overlay="true" trigger="menuShort" my="left top" at="left bottom">
-				<p:submenu label="Cadastro" icon="fa fa-edit">
-					<p:menuitem value="Usuário" url="/pages/usuario.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-user" />
-					<p:menuitem value="Cliente" url="/pages/cliente.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-users" />
-					<p:menuitem value="Item Pedido" url="/pages/itemPedido.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-edit" />
-					<p:menuitem value="Pedido" url="/pages/pedido.xhtml" onclick="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()" icon="fa fa-edit" />
-				</p:submenu>
-
-				<p:submenu icon="fa fa-user">
-					<p:menuitem global="false" value="#{loginMB.usuario.nome}" style="cursor: default; background: none;" />
-					<p:menuitem value="Sair" action="#{loginMB.logout}" icon="fa fa-power-off"/>
-				</p:submenu>
-			</p:tieredMenu>
+			<p:tieredMenu model="#{loginMB.menu.menuModel}" overlay="true" trigger="menuShort" my="left top" at="left bottom" />
 		</h:panelGroup>
 	</h:form>
 

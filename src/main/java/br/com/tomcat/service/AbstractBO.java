@@ -19,20 +19,20 @@ public abstract class AbstractBO<E extends Entity, DTO extends Entity> {
 
     public abstract AbstractDAO<E, DTO> getDAO();
 
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
-        return getDAO().getRowCountListAll(filterGlobal);
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
+        return getDAO().getRowCountLazyDataModel(filterGlobal);
     }
 
-    public List<DTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
-        return getDAO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, filterGlobal);
+    public List<DTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+        return getDAO().listLazyDataModel(first, pageSize, sortField, sortOrder, filterGlobal);
     }
 
-    public int getRowCountListAll(final Map<String, Object> filters) throws Exception {
-        return getDAO().getRowCountListAll(filters);
+    public int getRowCountLazyDataModel(final Map<String, Object> filters) throws Exception {
+        return getDAO().getRowCountLazyDataModel(filters);
     }
 
-    public List<DTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
-        return getDAO().listAllLazyDataModel(first, pageSize, sortField, sortOrder, filters);
+    public List<DTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
+        return getDAO().listLazyDataModel(first, pageSize, sortField, sortOrder, filters);
     }
 
     public E loadEntity(final DTO dto) throws Exception {

@@ -28,19 +28,19 @@ public abstract class AbstractDAO<E extends Entity, DTO extends Entity> {
         return (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
         throw new UnsupportedOperationException("Row count list all lazy is not implemented.");
     }
 
-    public List<DTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+    public List<DTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         throw new UnsupportedOperationException("List all lazy is not implemented.");
     }
 
-    public int getRowCountListAll(final Map<String, Object> filters) throws Exception {
+    public int getRowCountLazyDataModel(final Map<String, Object> filters) throws Exception {
         throw new UnsupportedOperationException("Row count list all lazy is not implemented.");
     }
 
-    public List<DTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
+    public List<DTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final Map<String, Object> filters) throws Exception {
         throw new UnsupportedOperationException("List all lazy is not implemented.");
     }
 
@@ -95,7 +95,7 @@ public abstract class AbstractDAO<E extends Entity, DTO extends Entity> {
     protected String getWhereLazyDataModel(final Map<String, Object> filters) {
         final StringBuilder where = new StringBuilder();
         int i = 0;
-        for(Map.Entry<String, Object> v : filters.entrySet()) {
+        for(final Map.Entry<String, Object> v : filters.entrySet()) {
             where.append((i == 0 ? " where " : " and ") + v.getKey().replace("\'","").replace("#", "'").replace("filter", v.getValue().toString().trim()));
             i++;
         }
@@ -104,11 +104,9 @@ public abstract class AbstractDAO<E extends Entity, DTO extends Entity> {
 
     public String getWhereGlobalFilter(final String filterGlobal, final String... columns) {
         final StringBuilder where = new StringBuilder();
-        int i = 0;
-        for(String column : columns) {
-            where.append((i == 0 ? " where " : " or ") + column + " like '%"+filterGlobal+"%'");
-            i++;
-        }
+        Arrays.stream(columns).forEach(column -> {
+            where.append((Arrays.binarySearch(columns, column) == 0 ? " where " : " or ") + column + " like '%"+filterGlobal+"%'");
+        });
         return where.toString();
     }
 

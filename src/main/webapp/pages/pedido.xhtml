@@ -7,7 +7,7 @@
 	<ui:decorate template="template.xhtml">
 		<ui:define name="centro">
 
-			<div class="divCenterPage ui-fluid">
+			<div class="centerPage ui-fluid">
 
 				<h:form id="fmMain">
 
@@ -84,7 +84,7 @@
 					</h:panelGroup>
 
 					<h:panelGroup id="pgForm" rendered="#{!pedidoMB.modoList}">
-						<p:panelGrid id="pnFormPedido" columns="1" columnClasses="ui-grid-col-9" layout="grid">
+						<p:panelGrid id="pnFormPedido" columns="1" columnClasses="ui-grid-col-12" layout="grid">
 							<h:panelGroup>
 								<p:outputLabel value="Código: " />
 								<p:inputText id="itCodigo" value="#{pedidoMB.entity.id}" disabled="true"/>

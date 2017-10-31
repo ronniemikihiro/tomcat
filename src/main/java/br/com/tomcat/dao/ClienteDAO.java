@@ -45,7 +45,7 @@ public class ClienteDAO extends AbstractDAO<Cliente, ClienteDTO> {
         };
     }
 
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
         try {
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "c.id", "c.nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_cliente c inner join tb_dados_pessoa dp on dp.id = c.id_dados_pessoa " + where, Integer.class);
@@ -56,7 +56,7 @@ public class ClienteDAO extends AbstractDAO<Cliente, ClienteDTO> {
         }
     }
 
-    public List<ClienteDTO> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+    public List<ClienteDTO> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
             final String sql = " select c.id as id_cliente, c.nome as nome, dp.id as id_dados_pessoa, dp.celular1 as celular1 from tb_cliente c " +
                                " inner join tb_dados_pessoa dp on dp.id = c.id_dados_pessoa ";

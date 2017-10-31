@@ -94,6 +94,13 @@
             <version>${mysql.version}</version>
         </dependency>
 
+        <!-- H2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.175</version>
+        </dependency>
+
         <!-- LOGGING -->
         <dependency>
             <groupId>log4j</groupId>

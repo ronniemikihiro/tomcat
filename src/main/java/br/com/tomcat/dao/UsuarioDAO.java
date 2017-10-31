@@ -43,7 +43,7 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
         };
     }
 
-    public int getRowCountListAll(final String filterGlobal) throws Exception {
+    public int getRowCountLazyDataModel(final String filterGlobal) throws Exception {
         try {
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
             return jdbcTemplate.queryForObject("select count(1) as rowCount from tb_usuario " + where, Integer.class);
@@ -54,7 +54,7 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
         }
     }
 
-    public List<Usuario> listAllLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
+    public List<Usuario> listLazyDataModel(final int first, final int pageSize, final String sortField, final SortOrder sortOrder, final String filterGlobal) throws Exception {
         try {
             final String sql = "select id, login, senha, email, nome, perfil, senha_ativa from tb_usuario ";
             final String where = StringUtil.isNullEmpty(filterGlobal) ? "" : getWhereGlobalFilter(filterGlobal, "id", "nome");
@@ -81,7 +81,7 @@ public class UsuarioDAO extends AbstractDAO<Usuario, Usuario>  {
         }
     }
 
-    public Usuario getToEmail(final String email) throws Exception {
+    public Usuario getByEmail(final String email) throws Exception {
         try {
             return jdbcTemplate.queryForObject("select id, login, senha, email, nome, perfil, senha_ativa from tb_usuario where email=?",
                     new Object[]{email}, getRowMapper());
